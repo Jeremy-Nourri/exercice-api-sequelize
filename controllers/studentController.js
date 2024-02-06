@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { Student } = require('../config/database');
 
 const studentController = {
-    signUp: async (req, res) => {
+    signUp: async function (req, res) {
         try {
             const { firstName, lastName, userName, password } = req.body;
             const salt = await bcrypt.genSalt(10);
@@ -20,7 +20,7 @@ const studentController = {
             res.status(400).json({ message: "Erreur lors de la création d'un nouvel utilisateur", error: error.message });
         }
     },
-    login: async (req, res) => {
+    login: async function (req, res) {
         try {
             const { userName, password } = req.body;
             const user = await Student.findOne({ where: { userName } });
@@ -35,9 +35,21 @@ const studentController = {
             res.header('Authorization', `Bearer ${token}`).json({ message: `${userName} vous étes connecté` });
         } 
         catch (error) {
-            res.status(400).json({ message: "Erreur lors de l'authtification de l'utilisateur", error: error.message });
+            res.status(400).json({ message: "Erreur lors de l'authentification de l'utilisateur", error: error.message });
         }
-    }
+    },
+    getProfile: async function (req, res) {
+        try {
+            const user = await Student.findOne(req.userId);
+            if (!user) {
+                return res.status(404).json({ message: 'Utilisateur non trouvé' });
+            }
+            res.json(user);
+        } catch (error) {
+            res.status(500).json({ message: "Erreur lors de la la récupération du profil", error: error.message })
+        }
+    },
+
 }
 
 module.exports = studentController;
