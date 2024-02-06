@@ -20,6 +20,24 @@ const studentController = {
             res.status(400).json({ message: "Erreur lors de la création d'un nouvel utilisateur", error: error.message });
         }
     },
+    login: async (req, res) => {
+        try {
+            const { userName, password } = req.body;
+            const user = await Student.findOne({ where: { userName } });
+            const validPassword = await bcrypt.compare(password, user.password);
+
+            if (!user || !validPassword) {
+                return res.status(401).json({ message: "Email ou/et mot de passe invalide(s)" });
+            }
+
+            const token = jwt.sign({ userdId: user.id }, process.env.RANDOM_TOKEN_SECRET, { expiresIn: "1d" });
+        
+            res.header('Authorization', `Bearer ${token}`).json({ message: `${userName} vous étes connecté` });
+        } 
+        catch (error) {
+            res.status(400).json({ message: "Erreur lors de l'authtification de l'utilisateur", error: error.message });
+        }
+    }
 }
 
 module.exports = studentController;
