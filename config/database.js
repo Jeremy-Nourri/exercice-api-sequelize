@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('school', 'root', 'root', {
+const sequelize = new Sequelize(process.env.DATABASE, process.env.USER, process.env.PASSWORD, {
     host: 'localhost',
     dialect: 'mysql'
 });
@@ -13,5 +13,7 @@ sequelize
   .catch((error) =>
     console.error("Problème lors de la synchronisation :", error.message)
 );
+
+
 
 module.exports = { sequelize, Student }
