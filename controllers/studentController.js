@@ -52,7 +52,7 @@ const studentController = {
     getAllStudents: async function (req, res) {
         try {
             const students = await Student.findAll({
-                attributes: ['id', 'userName', 'lastName', 'firstName']
+                attributes: { exclude: ['password'] }
             });
             if (!students) {
                 return res.status(404).json({ message: 'Aucun utilisateur trouvé' });
