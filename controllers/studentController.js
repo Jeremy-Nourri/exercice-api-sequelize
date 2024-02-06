@@ -46,7 +46,20 @@ const studentController = {
             }
             res.json(user);
         } catch (error) {
-            res.status(500).json({ message: "Erreur lors de la la récupération du profil", error: error.message })
+            res.status(500).json({ message: "Erreur lors de la récupération du profil", error: error.message })
+        }
+    },
+    getAllStudents: async function (req, res) {
+        try {
+            const students = await Student.findAll({
+                attributes: ['id', 'userName', 'lastName', 'firstName']
+            });
+            if (!students) {
+                return res.status(404).json({ message: 'Aucun utilisateur trouvé' });
+            }
+            res.json(students);
+        } catch (error) {
+            res.status(500).json({ message: "Erreur lors de la récupération des données", error: error.message })
         }
     },
 
